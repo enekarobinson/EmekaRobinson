@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.26;
+
+contract StudentRegistration {
+
+    struct Student {
+        uint id;
+        string name;
+        uint age;
+        string state;
+        bool isRegistered;
+    }
+
+    mapping(uint => Student) private students;
+
+event StudentRegistered(uint id, string name, uint age, string state);
+
+    function registerStudent(uint id, string memory name, uint age, string memory state) public {
+        require(students[id].isRegistered, "Student already registered.");
+
+        // Create a new student and store it in the mapping
+        Student({
+            id: id,
+            name: name,
+            age: age,
+            state: state,
+            isRegistered: true
+        });
+
+        // Emit the registration event
+        emit StudentRegistered(id, name, age, state);
+    }
+
+    // Function to retrieve student information
+    function getStudent(uint id) public view returns (uint, string memory name, uint age, string memory state, bool) {
+        require(students[id].isRegistered, "Student not found.");
+        
+        Student memory student = students[id];
+        return (student.id, student.name, student.age, student.state, student.isRegistered);
+    }
+}
